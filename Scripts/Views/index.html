@@ -2,14 +2,58 @@
 <html>
 <head>
     <title>TOGO-List</title>
-    <link href="Styles/materialize.css" rel="stylesheet">
-</head>
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="../../materialize/css/materialize.min.css"  media="screen,projection"/>
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/></head>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v0.38.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v0.38.0/mapbox-gl.css' rel='stylesheet' /> 
 <body>
-   
-    <script src="Scripts/jquery-2.1.4.min.js"></script>
-    <script src="Scripts/knockout-3.3.0.js"></script>
+    <div class="row">
+         <main>
+            <div id='map' style='position:absolute; top:0; bottom:0; width:100%; height:100%;z-index: -1;'></div>  
+        </main>
+        <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons md-18 valign pad-15" style='
+    font-size: 36px;background-color: white;background-color: #78909c;color: #b0bec5;padding: 5px;border: solid 1px #b0bec5;'>menu</i></a>
+        <ul id="slide-out" class="side-nav blue-grey lighten-5 fixed">
+            <li>
+            </li>
+        <li class="bold"><a href="#!" class="waves-effect">Place 1</a></li>
+        <li class="no-padding">
+            <ul class="collapsible collapsible-accordion">
+            <li>
+                <a class="collapsible-header waves-effect">Place 1 info<i class="material-icons md-18">arrow_drop_down</i></a>
+
+                <div class="collapsible-body">
+                <ul>
+                    <li><a href="#!">Place 1 more info</a></li>
+                </ul>
+                </div>
+            </li>
+        <li><div class="divider" style="margin:0px;"></div></li>
+        <li class="bold"><a href="#!" class="waves-effect">Search</a></li>
+        </ul>
+       
+    </div>
+    
+    <script>
+    mapboxgl.accessToken = 'pk.eyJ1Ijoiem9yeWFuYXQiLCJhIjoiY2o0NjNkaGdyMGJsdzMzbGRzcnB2NG0zYyJ9.6sKNrvuHPSOZzon9_rnTYA';
+    var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v10'
+    });
+    </script>
+   <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../../materialize/js/materialize.min.js"></script>
+    <script type="text/javascript" src="../ViewModels/IndexViewModel.js"></script>
+    <script src="../knockout-3.4.2.js"></script>
     <script>
         $(document).ready(function () {
+            $(".button-collapse").sideNav();
             ko.applyBindings(app.HomeViewModel);
         })
     </script>
