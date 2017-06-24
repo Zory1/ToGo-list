@@ -1,5 +1,5 @@
 var app = window.app || {};
-app.indexViewModel = (function(a,b,c,d,e,f){
+app.IndexViewModel = (function(a,b,c,d,e,f){
     'use strict';
     var me = {
         filtersAvailableViewModel: a,
