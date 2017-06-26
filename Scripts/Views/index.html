@@ -18,67 +18,43 @@
             <div id='map' style='position:absolute; top:0; bottom:0; width:100%; height:100%;z-index: -1;'></div>  
         </main>
 
-        <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons md-18 valign pad-15" style='
+        <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons valign" style='
     font-size: 24px;background-color: #26a69a;color: white;padding: 5px;border: solid 1px white;'>menu</i></a>
-        <ul id="slide-out" class="side-nav blue-grey lighten-5 fixed">
-            <li>
-            </li>
-        <li class="bold"><a href="#!" class="waves-effect">Place 1</a></li>
-        <li class="no-padding">
-            <ul class="collapsible collapsible-accordion">
-            <li>
-                <a class="collapsible-header waves-effect">Place 1 info<i class="material-icons md-18">arrow_drop_down</i></a>
-
-                <div class="collapsible-body">
-                <ul>
-                    <li><a href="#!">Place 1 more info</a></li>
+        <ul id="slide-out" class="side-nav blue-grey lighten-5 fixed">   
+            <li class="bold"><a href="#!" class="waves-effect">Saved Places</a></li>
+            <li class="no-padding">
+                <ul class="collapsible collapsible-accordion">
+                    <li>
+                        <a class="collapsible-header teal waves-effect" style="color:#ffffff;font-weight:normal;">Filter saved places<i class="material-icons md-18" style="color:#ffffff">arrow_drop_down</i></a>
+                        <div class="collapsible-body">
+                            <ul>
+                                <li>
+                                    <div class="row">
+                                        <div class="col s12">
+                                           TODO: Good looking form.
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
                 </ul>
-                </div>
             </li>
-        <li><div class="divider" style="margin:0px;"></div></li>
-        <li class="bold"><a href="#!" class="waves-effect">Search</a></li>
-        </ul>
-       
+            <!-- ko template:{name: 'display_one_place', data:savePlaceViewModel.places} -->
+            <!-- /ko -->
+           
+           
+       </ul>
     </div>
     
-    <!-- Modal Structure -->
+    <!-- Modal Structure - add new place pop up -->
     <div class="container">
          <div id="modal1" class="modal modal-fixed-footer" data-bind = "template: { name: 'map-location' }"></div>
     </div>
-    <!--- Modal Structure End -->
-
-    <!-- Map related code. TODO: move this into proper custom binding. Need to get a better understanding of how to do this first. -->
-    <script>
-        mapboxgl.accessToken = 'pk.eyJ1Ijoiem9yeWFuYXQiLCJhIjoiY2o0NjNkaGdyMGJsdzMzbGRzcnB2NG0zYyJ9.6sKNrvuHPSOZzon9_rnTYA';
-        var map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/mapbox/streets-v10',
-            center: [18.0153413, 59.3678046],
-            zoom: 9
-        });
-
-        map.addControl(new mapboxgl.GeolocateControl(),'bottom-right');
-
-        map.on('click', function (e) {
-            console.log("Click location:");
-            console.log(JSON.stringify(e.point));
-            console.log(JSON.stringify(e.lngLat));
-            
-            $('.chips').material_chip();
-            $('.datepicker').pickadate({
-                selectMonths: true, // Creates a dropdown to control month
-                selectYears: 45, // Creates a dropdown of 15 years to control year
-                container: 'body'
-		    });
-            
-            map.flyTo({center: e.lngLat, zoom:13});
-            $('#modal1').modal('open');
-        });
-    </script>
+    <!--- Modal Structure End - add new place pop up -->
    
    <!-- Start: Ko Templates -->
    <script id = "map-location" type = "text/html">
-
             <div class="modal-content">
                 <div class="row">
                     <div class="col s10 offset-s1">
@@ -90,8 +66,8 @@
                     <form class="col s12">
                         <div class="row ">
                             <div class="input-field col s10 offset-s1">
-                                <input id="user_name" type="text" class="validate">
-                                <label for="user_name">Location Name</label>
+                                <input id="location_name" type="text" class="" data-bind = "value: savePlaceViewModel.name">
+                                <label for="location_name">Location Name</label>
                             </div>
                         </div>
 
@@ -104,71 +80,171 @@
                         
                         <div class="row">
                             <div class="input-field col s10 offset-s1">
-                                <input id="user_name" type="text" class="validate">
-                                <label for="password">Note or description</label>
+                                <input id="description" type="text" data-bind = "value: savePlaceViewModel.description">
+                                <label for="description">Note or description</label>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="input-field col s10 offset-s1">
-                                <input type="checkbox" id="test5" class="checkbox-cyan" />
-                                <label for="test5">I've been here.</label>
+                                <input type="checkbox" id="visited" class="checkbox-cyan" data-bind = "checked: savePlaceViewModel.visited" />
+                                <label for="visited">I've been here.</label>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="input-field col s10 offset-s1" >
-                                <input type="date" class="datepicker" style="position: relative; z-index: 100000 !important;">
-                                <label for="date">Date of visit</label>
+                        <!-- ko if:savePlaceViewModel.visited -->
+                        <div class="row" >
+                            <div class="row">
+                                <div class="input-field col s10 offset-s1" >
+                                    <input type="date" class="datepicker" data-bind="value: savePlaceViewModel.visitedDate ,datepicker: savePlaceViewModel.visitedDate, datepickerOptions: { minDate: new Date(),selectMonths: true, selectYears: 45, container: 'body' }" >
+                                    <label for="date">Date of visit</label>
+                                </div>
+                            </div>
+
+                        
+                            <div class="row">
+                                
+                                <div class="col s10 offset-s1" name="feedback"> 
+                                    <h6 style="color:#9e9e9e; font-size:1em;">Did you like it?</h6>
+                                    <p>
+                                            <input name="review" type="radio" id="yes" value="yes" data-bind = "checked: savePlaceViewModel.wasItGood"/>
+                                            <label for="yes">Hell, yeah!</label>
+                                        </p>
+
+                                        <p>
+                                            <input name="review" type="radio" id="not_sure" value="not sure" data-bind = "checked: savePlaceViewModel.wasItGood"/>
+                                            <label for="not_sure">It was Ok-ish.</label>
+                                        </p>
+                                        
+                                        <p>
+                                            <input name="review" type="radio" id="no" value = "no" data-bind = "checked: savePlaceViewModel.wasItGood"/>
+                                            <label for="no">Nope.</label>     
+                                        </p>
+                                </div>
                             </div>
                         </div>
-
+                        <!-- /ko -->
                        
-                        <div class="row">
-                            
-                            <div class="col s10 offset-s1" name="feedback"> 
-                                <h6 style="color:#9e9e9e; font-size:1em;">Did you like it?</h6>
-                                   <p>
-                                        <input name="group1" type="radio" id="test1" />
-                                        <label for="test1">Hell, yeah!</label>
-                                    </p>
-
-                                    <p>
-                                        <input name="group1" type="radio" id="test2" />
-                                        <label for="test2">It was Ok.</label>
-                                    </p>
-                                    
-                                    <p>
-                                        <input name="group1" type="radio" id="test3"  />
-                                        <label for="test3">Nope.</label>     
-                                    </p>
-                            </div>
-                        </div>
 
                     </form>
                 </div>
 
             </div>
             <div class="modal-footer">
-                <a href="#!" class="modal-action modal-close waves-effect waves-teal btn-flat">Save</a>
-                <a href="#!" class="modal-action modal-close waves-effect waves-teal btn-flat">Cancel</a>
+                <a href="#!" class="modal-action modal-close waves-effect waves-teal btn-flat" data-bind = "click: savePlaceViewModel.savePlace" id = "save">Save</a>
+                <a href="#!" class="modal-action modal-close waves-effect waves-teal btn-flat" data-bind = "click: savePlaceViewModel.cancelSavePlace" id = "cancel">Cancel</a>
             </div>
         
    </script>
+
+   <script id = "display_one_place" type="text/html">
+   <!-- ko foreach:$data -->
+     <div class="row">
+      <div class="col s12">
+        <div class="card-panel">
+         <div class="row">
+             <div class="col s2"><a class="btn-flat right waves-circle" style="padding:0px !important"><i class="material-icons" style = " position: relative; vertical-align: middle;width: 35px;height: 35px;">my_location</i></a></div>
+             <div class="col s8" style="cursor: pointer;margin-left:-10px; padding-left:0px !important"><span style = "color:#26a69a;line-height:35px; padding-left:0px !important;margin-left:0px !important;" data-bind = "click: $root.toggleDisplayPlace,text: name"></span></div>
+             
+             <div class="col s2" style="padding-right:0px !important"><a class="btn-flat right waves-circle" style="padding:0px !important" data-bind="click: $root.deletePlace.bind($data)"><i class="material-icons" style = " position: relative; vertical-align: middle;width: 35px;height: 35px;">delete</i></a></div>
+         </div>
+          
+              <!-- ko if:$root.displayPlace -->
+               <table>
+                    <thead>
+                    </thead>
+
+                    <tbody>
+                    <tr>
+                        <td>Tags:</td>
+                        <td data-bind="text: tags"></td>
+                    </tr>
+                    <tr>
+                        <td>Description:</td>
+                        <td data-bind = "text: description"></td>
+                    </tr>
+                    <tr>
+                        <td>Visited:</td>
+                        <td data-bind = "text: visited"></td>
+                    </tr>
+                    <tr>
+                        <td>Visited Date:</td>
+                        <td data-bind = "text: visitedDate"></td>
+                    </tr>
+                    <tr>
+                        <td>Was it good:</td>
+                        <td data-bind = "text: wasItGood"></td>
+                    </tr>
+                    </tbody>
+                </table> 
+            <!-- /ko -->       
+        </div>
+      </div>
+    </div>
+
+      
+   <!-- /ko -->   
+   </script>
+
    <!-- End: Ko Templates -->
   
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="../../materialize/js/materialize.min.js"></script>
-    <script type="text/javascript" src="../ViewModels/IndexViewModel.js"></script>
     <script src="../knockout-3.4.2.js"></script>
+    <script src="../koCustom.js"></script>
+    <script type="text/javascript" src="../Models/Place.js"></script>
+    <script src="../DataContext.js"></script>
+    <script type="text/javascript" src="../ViewModels/SavePlaceViewModel.js"></script>  
+    <script type="text/javascript" src="../ViewModels/IndexViewModel.js"></script>   
+    <script type="text/javascript" src="../../materialize/js/materialize.min.js"></script>
+ 
+
     
     <!-- Initialize things   -->
     <script>
         $(document).ready(function () {
-            $(".button-collapse").sideNav();//init side navigation
-            $('.modal').modal();//init popup for inputting location info
             ko.applyBindings(app.IndexViewModel);
+            
+            $('.chips').material_chip();
+            $('.chips').on('chip.add', function(e, chip){
+                 app.IndexViewModel.savePlaceViewModel.addTag(chip.tag)
+             });
+              $('.chips').on('chip.delete', function(e, chip){
+                 app.IndexViewModel.savePlaceViewModel.removeTag(chip.tag)
+            });
+
+            $('#save').on('click', function(){
+                $('.chip').remove();
+            });
+
+            $('#cancel').on('click', function(){
+                $('.chip').remove();
+            });
+
+            $(".button-collapse").sideNav();//init side navigation
+            $('.modal').modal();//init popup for inputting location info        
         })
+    </script>
+
+        <!-- Map related code. TODO: move this into proper custom binding. Need to get a better understanding of how to do this first. -->
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1Ijoiem9yeWFuYXQiLCJhIjoiY2o0NjNkaGdyMGJsdzMzbGRzcnB2NG0zYyJ9.6sKNrvuHPSOZzon9_rnTYA';
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v10',
+            center: [18.0153413, 59.3678046],
+            zoom: 9
+        });
+
+        map.addControl(new mapboxgl.GeolocateControl(),'bottom-right');
+
+        map.on('click', function (e) {
+            
+            if(typeof e.point != "undefined" && typeof e.point["x"] != "undefined" && typeof e.point["y"] != "undefined")app.IndexViewModel.savePlaceViewModel.point(e.point);           
+            if(typeof e.lngLat != "undefined" && e.lngLat["lng"] && typeof e.lngLat["lat" != "undefined"])app.IndexViewModel.savePlaceViewModel.lngLat(e.lngLat);
+            
+            map.flyTo({center: e.lngLat, zoom:13});
+            $('#modal1').modal('open');
+        });
     </script>
 </body>
 </html>
